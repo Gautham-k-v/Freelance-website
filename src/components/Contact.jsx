@@ -93,7 +93,7 @@ export default function Contact() {
     <section id="contact" className="scroll-mt-24 bg-panel/40 py-24 sm:py-28">
       <div className="mx-auto grid max-w-site items-start gap-12 px-5 sm:px-8 lg:grid-cols-[0.85fr_1.15fr]">
         <Reveal>
-          <SectionLabel>06 / Let&apos;s make it happen</SectionLabel>
+          <SectionLabel>07 / Let&apos;s make it happen</SectionLabel>
           <h2 className="mt-4 text-4xl font-semibold tracking-[-0.03em] sm:text-5xl">
             Have a Project
             <br />

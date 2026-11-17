@@ -85,6 +85,8 @@ export const budgetOptions = [
   "Not sure yet",
 ]
 
+const projectImage = (file) => `${import.meta.env.BASE_URL}images/projects/${file}`
+
 export const projects = [
   {
     id: "restaurant",
@@ -94,7 +96,7 @@ export const projects = [
       "A modern restaurant landing page designed to showcase restaurant offerings, menus and contact information.",
     tags: ["HTML", "CSS", "JavaScript"],
     url: "https://restaurant-landing-flax.vercel.app/",
-    image: "/images/projects/restaurant-preview.webp",
+    image: projectImage("restaurant-preview.webp"),
     alt: "TableBite restaurant homepage with the Kerala flavours headline and a sadya photograph",
   },
   {
@@ -105,7 +107,7 @@ export const projects = [
       "A fitness website featuring a modern gym-focused design and promotional sections.",
     tags: ["HTML", "CSS", "JavaScript"],
     url: "https://gym-landingpge.vercel.app/",
-    image: "/images/projects/gym-preview.webp",
+    image: projectImage("gym-preview.webp"),
     alt: "Ironforge Fitness homepage with the strength headline and a training photograph",
   },
   {
@@ -116,7 +118,7 @@ export const projects = [
       "A property-focused website designed to showcase real estate listings and generate enquiries.",
     tags: ["React", "Tailwind CSS"],
     url: "https://real-estate-rust-nu.vercel.app/",
-    image: "/images/projects/realestate-preview.webp",
+    image: projectImage("realestate-preview.webp"),
     alt: "Malabar Estates homepage with a modern house, pool and property search",
   },
   {
@@ -127,7 +129,7 @@ export const projects = [
       "A frontend prototype of a Loan and Daily Collection Management System featuring customer management, loan management, collections and reporting interfaces.",
     tags: ["React", "Frontend prototype"],
     url: "https://gautham-k-v.github.io/SAAJ-Financial-/",
-    image: "/images/projects/saaj-preview.webp",
+    image: projectImage("saaj-preview.webp"),
     alt: "SAAJ Finance dashboard prototype with customers, loans, collections and reports",
   },
 ]
@@ -177,8 +179,6 @@ export const steps = [
     description: "Test, optimize and deploy your website.",
   },
 ]
-
-export const toolkit = ["HTML", "CSS", "JavaScript", "React", "Node.js", "MongoDB", "Tailwind CSS"]
 
 export const marqueeItems = [
   "Good design. Great development.",

@@ -1,5 +1,5 @@
 import { ArrowUpRight, CornerDownRight } from "lucide-react"
-import { linkedInUrl, toolkit } from "../data/site"
+import { linkedInUrl } from "../data/site"
 import Reveal from "./Reveal"
 import SectionLabel from "./SectionLabel"
 
@@ -71,22 +71,11 @@ export default function About() {
                 presence.
               </p>
             </div>
-            <p className="mt-8 text-[11px] font-medium uppercase tracking-[0.2em] text-mute">My toolkit</p>
-            <ul className="mt-3 flex flex-wrap gap-2">
-              {toolkit.map((item) => (
-                <li
-                  key={item}
-                  className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-sm text-white/85"
-                >
-                  {item}
-                </li>
-              ))}
-            </ul>
             <a
               href={linkedInUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-white transition hover:text-lilac"
+              className="mt-8 inline-flex items-center gap-1.5 text-sm font-medium text-white transition hover:text-lilac"
             >
               Connect on LinkedIn
               <ArrowUpRight className="size-4" aria-hidden="true" />

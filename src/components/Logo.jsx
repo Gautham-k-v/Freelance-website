@@ -1,7 +1,7 @@
 export default function Logo({ className = "h-12 w-auto", loading = "eager" }) {
   return (
     <img
-      src="/logo.png"
+      src={`${import.meta.env.BASE_URL}logo.png`}
       alt="NexLance, freelance web development"
       className={className}
       width="339"
