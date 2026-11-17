@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react"
+import { useMemo, useRef, useState } from "react"
 import { ArrowUpRight, Check, LoaderCircle } from "lucide-react"
 import { budgetOptions, emailAddress, services, whatsappNumber, whatsappUrl } from "../data/site"
 import { useEnquiry } from "../context/EnquiryContext"
@@ -45,7 +45,10 @@ export default function Contact() {
   const [values, setValues] = useState(emptyForm)
   const [errors, setErrors] = useState({})
   const [status, setStatus] = useState("idle")
+  const [notice, setNotice] = useState("")
   const [honey, setHoney] = useState("")
+  const sendingRef = useRef(false)
+  const businessDeliveredRef = useRef(false)
   const selectedService = service || values.service
 
   const mailto = useMemo(
@@ -62,23 +65,35 @@ export default function Contact() {
 
   async function onSubmit(event) {
     event.preventDefault()
+    if (sendingRef.current) return
     const nextErrors = validate({ ...values, service: selectedService })
     setErrors(nextErrors)
     if (Object.keys(nextErrors).length) {
       setStatus("invalid")
       return
     }
-    if (honey) {
-      setStatus("success")
-      return
-    }
+    if (honey) return
 
+    sendingRef.current = true
+    setNotice("")
     setStatus("sending")
     try {
-      await sendEnquiry({ ...values, service: selectedService })
+      await sendEnquiry(
+        { ...values, service: selectedService },
+        { acknowledgementOnly: businessDeliveredRef.current },
+      )
+      businessDeliveredRef.current = false
       setStatus("success")
     } catch (error) {
-      setStatus(error?.activation ? "activation" : "error")
+      if (error?.businessDelivered) businessDeliveredRef.current = true
+      setNotice(
+        error?.businessDelivered
+          ? "Your enquiry reached me, but the confirmation email could not be sent. Try Again resends only that confirmation."
+          : "",
+      )
+      setStatus("error")
+    } finally {
+      sendingRef.current = false
     }
   }
 
@@ -86,7 +101,9 @@ export default function Contact() {
     setValues(emptyForm)
     setErrors({})
     setStatus("idle")
+    setNotice("")
     setService("")
+    businessDeliveredRef.current = false
   }
 
   return (
@@ -146,14 +163,8 @@ export default function Contact() {
                   )}
                   {status === "error" && (
                     <p className="mt-4 rounded-xl border border-red-400/30 bg-red-500/10 px-4 py-3 text-sm text-red-100">
-                      Your enquiry couldn&apos;t be sent. Your details are saved here. Please try again or
-                      email me directly.
-                    </p>
-                  )}
-                  {status === "activation" && (
-                    <p className="mt-4 rounded-xl border border-amber-300/30 bg-amber-400/10 px-4 py-3 text-sm text-amber-50">
-                      A confirmation email was sent to {emailAddress}. Open it, activate form delivery,
-                      then press Try Again. Your details are still here.
+                      {notice ||
+                        "Your enquiry couldn't be sent. Your details are saved here. Please try again or email me directly."}
                     </p>
                   )}
                 </div>
@@ -284,7 +295,7 @@ export default function Contact() {
                 >
                   {status === "sending"
                     ? "Sending enquiry..."
-                    : status === "error" || status === "activation"
+                    : status === "error"
                       ? "Try Again"
                       : "Send Project Enquiry"}
                   {status === "sending" ? (
@@ -294,7 +305,7 @@ export default function Contact() {
                   )}
                 </button>
 
-                {(status === "error" || status === "activation") && (
+                {status === "error" && (
                   <a href={mailto} className="mt-3 inline-flex text-sm text-lilac hover:text-white">
                     Email me directly
                   </a>

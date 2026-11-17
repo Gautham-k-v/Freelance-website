@@ -24,30 +24,18 @@ The static site is written to `dist/`.
 
 Enquiries are addressed to **codextech2025@gmail.com**.
 
-### EmailJS (recommended once you want your own template)
+### EmailJS
 
-1. Create a free account at [emailjs.com](https://www.emailjs.com).
-2. Connect the Gmail account that should receive enquiries.
-3. Create an email template that includes these variables:
-   - `{{from_name}}`
-   - `{{from_email}}`
-   - `{{phone}}`
-   - `{{company}}`
-   - `{{service}}`
-   - `{{budget}}`
-   - `{{message}}`
-   - `{{to_email}}`
-4. Set the template recipient to `codextech2025@gmail.com` and Reply-To to `{{from_email}}`.
-5. Copy `.env.example` to `.env` and fill in the service ID, template ID and **public** key.
-6. Restart the dev server.
+The form sends two EmailJS templates:
 
-Do not put the EmailJS private key in `.env` or anywhere in this frontend. The public key is safe to ship. `.env` is gitignored.
+1. `VITE_EMAILJS_TEMPLATE_ID` notifies `codextech2025@gmail.com`. Set that template’s To email to `codextech2025@gmail.com` and Reply-To to `{{from_email}}`.
+2. `VITE_EMAILJS_AUTO_REPLY_TEMPLATE_ID` acknowledges the customer. Set that template’s To email to `{{email}}`.
 
-### Before EmailJS is configured
+Both templates receive `from_name`, `from_email`, `email`, `phone`, `company`, `service`, `budget`, `message`, `to_email`, and `reply_to`.
 
-If the three `VITE_EMAILJS_*` values are empty, the form sends through [FormSubmit](https://formsubmit.co) to the same Gmail address. The first submission sends a confirmation email from FormSubmit. Open that email and activate the form once. The site tells you when that step is still waiting. After activation, enquiries arrive in the inbox.
+Copy `.env.example` to `.env`, fill in the public values, and restart the dev server. Add the same variables in Vercel before deploying. Do not put the EmailJS private key in `.env` or in the frontend. `.env` is gitignored.
 
-If delivery fails, the form keeps what was typed and offers **Email me directly**, which opens a prefilled email to `codextech2025@gmail.com`.
+If sending fails, the form keeps what was typed and offers **Email me directly**, which opens a prefilled email to `codextech2025@gmail.com`. A second click while a request is in progress is ignored. If the business email succeeds and only the acknowledgement fails, Try Again resends the acknowledgement.
 
 ## Project links
 

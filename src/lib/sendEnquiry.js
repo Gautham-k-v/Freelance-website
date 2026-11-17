@@ -3,56 +3,67 @@ import { emailAddress } from "../data/site"
 
 const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID
 const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID
+const autoReplyTemplateId = import.meta.env.VITE_EMAILJS_AUTO_REPLY_TEMPLATE_ID
 const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY
 
 export function emailJsConfigured() {
   return Boolean(serviceId && templateId && publicKey)
 }
 
-export async function sendEnquiry(values) {
-  const payload = {
-    from_name: values.name.trim(),
-    from_email: values.email.trim(),
+function enquiryParams(values) {
+  const name = values.name.trim()
+  const fromEmail = values.email.trim()
+  return {
+    from_name: name,
+    name,
+    from_email: fromEmail,
+    email: fromEmail,
     phone: values.phone.trim(),
     company: values.company.trim(),
     service: values.service,
     budget: values.budget || "Not specified",
     message: values.description.trim(),
-    to_email: emailAddress,
+  }
+}
+
+export async function sendEnquiry(values, { acknowledgementOnly = false } = {}) {
+  if (!emailJsConfigured()) {
+    throw new Error("Email delivery is not configured.")
   }
 
-  if (emailJsConfigured()) {
-    await emailjs.send(serviceId, templateId, payload, { publicKey })
-    return
+  const details = enquiryParams(values)
+  const options = { publicKey }
+
+  if (!acknowledgementOnly) {
+    await emailjs.send(
+      serviceId,
+      templateId,
+      {
+        ...details,
+        to_email: emailAddress,
+        reply_to: details.from_email,
+      },
+      options,
+    )
   }
 
-  const response = await fetch(`https://formsubmit.co/ajax/${emailAddress}`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-    },
-    body: JSON.stringify({
-      name: payload.from_name,
-      email: payload.from_email,
-      phone: payload.phone,
-      company: payload.company,
-      service: payload.service,
-      budget: payload.budget,
-      message: payload.message,
-      _subject: `NexLance enquiry from ${payload.from_name}`,
-      _template: "table",
-      _captcha: "false",
-      _replyto: payload.from_email,
-    }),
-  })
-
-  const data = await response.json().catch(() => ({}))
-  const failed = !response.ok || data.success === false || data.success === "false"
-  if (failed) {
-    const error = new Error(data.message || "The enquiry could not be delivered.")
-    error.activation = /activat/i.test(error.message)
-    throw error
+  if (autoReplyTemplateId) {
+    try {
+      await emailjs.send(
+        serviceId,
+        autoReplyTemplateId,
+        {
+          ...details,
+          to_email: details.from_email,
+          email: details.from_email,
+          reply_to: emailAddress,
+        },
+        options,
+      )
+    } catch (error) {
+      error.businessDelivered = true
+      throw error
+    }
   }
 }
 
