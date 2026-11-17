@@ -85,6 +85,15 @@ export default function Contact() {
       businessDeliveredRef.current = false
       setStatus("success")
     } catch (error) {
+      console.error(
+        "[EmailJS] Form submission failed.",
+        {
+          stage: error?.stage || (error?.businessDelivered ? "Customer auto-reply" : "Admin enquiry"),
+          status: error?.status ?? null,
+          text: error?.text || error?.message || String(error),
+        },
+        error,
+      )
       if (error?.businessDelivered) businessDeliveredRef.current = true
       setNotice(
         error?.businessDelivered

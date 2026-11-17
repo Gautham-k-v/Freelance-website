@@ -28,12 +28,12 @@ Enquiries are addressed to **codextech2025@gmail.com**.
 
 The form sends two EmailJS templates:
 
-1. `VITE_EMAILJS_TEMPLATE_ID` notifies `codextech2025@gmail.com`. Set that template’s To email to `codextech2025@gmail.com` and Reply-To to `{{from_email}}`.
-2. `VITE_EMAILJS_AUTO_REPLY_TEMPLATE_ID` acknowledges the customer. Set that template’s To email to `{{email}}`.
+1. `VITE_EMAILJS_CONTACT_TEMPLATE_ID` notifies `codextech2025@gmail.com`. Set that template’s To email to `codextech2025@gmail.com` and Reply-To to `{{from_email}}`.
+2. `VITE_EMAILJS_AUTOREPLY_TEMPLATE_ID` acknowledges the customer. Set that template’s To email to `{{email}}`.
 
-Both templates receive `from_name`, `from_email`, `email`, `phone`, `company`, `service`, `budget`, `message`, `to_email`, and `reply_to`.
+Also set `VITE_EMAILJS_SERVICE_ID` and `VITE_EMAILJS_PUBLIC_KEY`. Both templates receive `from_name`, `name`, `from_email`, `email`, `phone`, `company`, `service`, `budget`, `message`, `to_email`, and `reply_to`.
 
-Copy `.env.example` to `.env`, fill in the public values, and restart the dev server. Add the same variables in Vercel before deploying. Do not put the EmailJS private key in `.env` or in the frontend. `.env` is gitignored.
+Copy `.env.example` to `.env`, fill in the public values, and restart the dev server. Add the same four variables in Vercel, then redeploy. Vite copies them into the site during the build, so adding them after a deployment does nothing until the next build. Do not put the EmailJS private key in `.env` or in the frontend. `.env` is gitignored.
 
 If sending fails, the form keeps what was typed and offers **Email me directly**, which opens a prefilled email to `codextech2025@gmail.com`. A second click while a request is in progress is ignored. If the business email succeeds and only the acknowledgement fails, Try Again resends the acknowledgement.
 
