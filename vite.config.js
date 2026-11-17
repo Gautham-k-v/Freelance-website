@@ -1,10 +1,12 @@
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
 
+const pagesBase = '/Freelance-website/'
+
 // https://vite.dev/config/
-export default defineConfig(({ command }) => ({
+export default defineConfig({
   plugins: [react()],
-  // Project Pages lives at /Freelance-website/, not the domain root.
-  // Dev stays at / so the local server does not need that prefix.
-  base: command === 'build' ? '/Freelance-website/' : '/',
-}))
+  // GitHub Actions sets GITHUB_ACTIONS and publishes this project site under
+  // /Freelance-website/. Vercel and local builds are served from the domain root.
+  base: process.env.GITHUB_ACTIONS ? pagesBase : '/',
+})
